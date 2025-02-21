@@ -20,5 +20,9 @@ namespace CoinB.Data.Models
         [ForeignKey("Category")]
         public int CategoryId { get; set; }
         public Category Category { get; set; }
+
+        [ForeignKey("Account")]
+        public int AccountId { get; set; }
+        public Account Account { get; set; }
     }
 }
