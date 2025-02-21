@@ -63,11 +63,6 @@ namespace CoinB.Endpoints
 
         private static async Task<CategoryResponseDto> UpdateCategory(int id, UpdateCategoryRequestDto data, CategoryService service)
         {
-            if(id != data.CategoryId)
-            {
-                throw new Exception("Id does not match");
-            }
-
             var category = await service.GetCategoryByIdAsync(id) ?? throw new Exception("Category not found");
 
             category.CategoryName = data.CategoryName;

@@ -13,9 +13,9 @@ namespace CoinB.Services
             this.context = context;
         }
 
-        public async Task<List<Transaction>> GetAllTransactionsAsync()
+        public async Task<List<Transaction>> GetTransactionsByAccountIdAsync(int accountId)
         {
-            return await context.Transactions.ToListAsync();
+            return await context.Transactions.Where(transaction => transaction.AccountId == accountId).ToListAsync();
         }
 
         public async Task<Transaction?> GetTransactionByIdAsync(int id)

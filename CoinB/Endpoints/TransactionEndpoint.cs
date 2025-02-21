@@ -7,26 +7,26 @@ namespace CoinB.Endpoints
     public static class TransactionEndpoint
     {
         public static void MapTransactionEndpoints(this IEndpointRouteBuilder routes)
-        {
-            routes.MapGet("/transactions", GetAllTransactions)
-            .WithName(nameof(GetAllTransactions));
+        {            
+            routes.MapGet("/account/{accountId}/transactions", GetTransactionsByAccount)
+            .WithName(nameof(GetTransactionsByAccount));
 
-            routes.MapGet("/transaction/{id}", GetTransactionById)
+            routes.MapGet("/account/{accountId}/transaction/{id}", GetTransactionById)
             .WithName(nameof(GetTransactionById));
 
-            routes.MapPost("/transaction", AddTransaction)
+            routes.MapPost("/account/{accountId}/transaction", AddTransaction)
             .WithName(nameof(AddTransaction));
 
-            routes.MapPut("/transaction/{id}", UpdateTransaction)
+            routes.MapPut("/account/{accountId}/transaction/{id}", UpdateTransaction)
             .WithName(nameof(UpdateTransaction));
 
-            routes.MapDelete("/transaction/{id}", DeleteTransaction)
+            routes.MapDelete("/account/{accountId}/transaction/{id}", DeleteTransaction)
             .WithName(nameof(DeleteTransaction));
         }
 
-        private static async Task<List<TransactionResponseDto>> GetAllTransactions(TransactionService service)
+        private static async Task<List<TransactionResponseDto>> GetTransactionsByAccount(int accountId, TransactionService service)
         {
-            var list = await service.GetAllTransactionsAsync();
+            var list = await service.GetTransactionsByAccountIdAsync(accountId);
             return list.Select(data => new TransactionResponseDto
             {
                 TransactionId = data.TransactionId,
@@ -34,25 +34,29 @@ namespace CoinB.Endpoints
                 Date = data.Date,
                 Description = data.Description,
                 CategoryId = data.CategoryId,
-                AccountId = data.AccountId
             }).ToList();
         }
 
-        private static async Task<TransactionResponseDto> GetTransactionById(int id, TransactionService service)
+        private static async Task<TransactionResponseDto> GetTransactionById(int accountId, int id, TransactionService service)
         {
-            var data = await service.GetTransactionByIdAsync(id) ?? throw new Exception("Transaction not found");
+            var transaction = await service.GetTransactionByIdAsync(id) ?? throw new Exception("Transaction not found");
+
+            if (transaction.AccountId != accountId)
+            {
+                throw new Exception("Account ID does not match the transaction's account ID");
+            }
+
             return new TransactionResponseDto
             {
-                TransactionId = data.TransactionId,
-                Amount = data.Amount,
-                Date = data.Date,
-                Description = data.Description,
-                CategoryId = data.CategoryId,
-                AccountId = data.AccountId
+                TransactionId = transaction.TransactionId,
+                Amount = transaction.Amount,
+                Date = transaction.Date,
+                Description = transaction.Description,
+                CategoryId = transaction.CategoryId
             };
         }
 
-        private static async Task<TransactionResponseDto> AddTransaction(AddTransactionRequestDto data, TransactionService service)
+        private static async Task<TransactionResponseDto> AddTransaction(int accountId, AddTransactionRequestDto data, TransactionService service)
         {
             var transaction = new Transaction
             {
@@ -60,7 +64,7 @@ namespace CoinB.Endpoints
                 Date = data.Date,
                 Description = data.Description,
                 CategoryId = data.CategoryId,
-                AccountId = data.AccountId
+                AccountId = accountId
             };
 
             await service.AddTransactionAsync(transaction);
@@ -71,25 +75,18 @@ namespace CoinB.Endpoints
                 Amount = transaction.Amount,
                 Date = transaction.Date,
                 Description = transaction.Description,
-                CategoryId = transaction.CategoryId,
-                AccountId = transaction.AccountId
+                CategoryId = transaction.CategoryId
             };
         }
 
-        private static async Task<TransactionResponseDto> UpdateTransaction(int id, UpdateTransactionRequestDto data, TransactionService service)
+        private static async Task<TransactionResponseDto> UpdateTransaction(int accountId, int id, UpdateTransactionRequestDto data, TransactionService service)
         {
-            if (id != data.TransactionId)
-            {
-                throw new Exception("Id does not match");
-            }
-
             var transaction = await service.GetTransactionByIdAsync(id) ?? throw new Exception("Transaction not found");
 
             transaction.Amount = data.Amount;
             transaction.Date = data.Date;
             transaction.Description = data.Description;
             transaction.CategoryId = data.CategoryId;
-            transaction.AccountId = data.AccountId;
 
             await service.UpdateTransactionAsync(transaction);
 
@@ -99,13 +96,19 @@ namespace CoinB.Endpoints
                 Amount = transaction.Amount,
                 Date = transaction.Date,
                 Description = transaction.Description,
-                CategoryId = transaction.CategoryId,
-                AccountId = transaction.AccountId
+                CategoryId = transaction.CategoryId
             };
         }
 
-        private static async Task DeleteTransaction(int id, TransactionService service)
+        private static async Task DeleteTransaction(int accountId, int id, TransactionService service)
         {
+            var transaction = await service.GetTransactionByIdAsync(id) ?? throw new Exception("Transaction not found");
+
+            if (transaction.AccountId != accountId)
+            {
+                throw new Exception("Account ID does not match the transaction's account ID");
+            }
+
             await service.DeleteTransactionAsync(id);
         }
     }

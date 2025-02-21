@@ -5,9 +5,6 @@ namespace CoinB.Models.Transaction
     public class UpdateTransactionRequestDto
     {
         [Required]
-        public int TransactionId { get; set; }
-
-        [Required]
         public decimal Amount { get; set; }
 
         [Required]
@@ -18,8 +15,5 @@ namespace CoinB.Models.Transaction
 
         [Required]
         public int CategoryId { get; set; }
-
-        [Required]
-        public int AccountId { get; set; }
     }
 }

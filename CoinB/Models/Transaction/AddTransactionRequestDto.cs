@@ -15,8 +15,5 @@ namespace CoinB.Models.Transaction
 
         [Required]
         public int CategoryId { get; set; }
-
-        [Required]
-        public int AccountId { get; set; }
     }
 }

@@ -16,6 +16,7 @@ builder.Services.AddDbContext<CoinBDbContext>(options =>
 
 builder.Services.AddScoped<CategoryService>();
 builder.Services.AddScoped<TransactionService>();
+builder.Services.AddScoped<AccountService>();
 
 var app = builder.Build();
 
@@ -29,5 +30,6 @@ app.UseHttpsRedirection();
 
 app.MapCategoryEndpoints();
 app.MapTransactionEndpoints();
+app.MapAccountEndpoints();
 
 app.Run();
