@@ -1,0 +1,6 @@
+@CoinB_HostAddress = http://localhost:5019
+
+GET {{CoinB_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
