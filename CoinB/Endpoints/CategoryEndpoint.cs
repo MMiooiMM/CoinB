@@ -1,4 +1,5 @@
 ﻿using CoinB.Data.Models;
+using CoinB.Models.Category;
 using CoinB.Services;
 
 namespace CoinB.Endpoints
@@ -24,22 +25,43 @@ namespace CoinB.Endpoints
 
         }
 
-        private static async Task<List<Category>> GetAllCategories(CategoryService service)
+        private static async Task<List<CategoryResponseDto>> GetAllCategories(CategoryService service)
         {
-            return await service.GetAllCategoriesAsync();
+            var list = await service.GetAllCategoriesAsync();
+            return list.Select(data => new CategoryResponseDto
+            {
+                CategoryId = data.CategoryId,
+                CategoryName = data.CategoryName
+            }).ToList();
         }
 
-        private static async Task<Category> GetCategoryById(int id, CategoryService service)
+        private static async Task<CategoryResponseDto> GetCategoryById(int id, CategoryService service)
         {
-            return await service.GetCategoryByIdAsync(id) ?? throw new Exception("");
+            var data = await service.GetCategoryByIdAsync(id) ?? throw new Exception("");
+            return new CategoryResponseDto
+            {
+                CategoryId = data.CategoryId,
+                CategoryName = data.CategoryName
+            };
         }
 
-        private static async Task<Category> AddCategory(Category data, CategoryService service)
+        private static async Task<CategoryResponseDto> AddCategory(AddCategoryRequestDto data, CategoryService service)
         {
-            return await service.AddCategoryAsync(data);
+            var category = new Category
+            {
+                CategoryName = data.CategoryName
+            };
+
+            await service.AddCategoryAsync(category);
+
+            return new CategoryResponseDto
+            {
+                CategoryId = category.CategoryId,
+                CategoryName = category.CategoryName
+            };
         }
 
-        private static async Task<Category> UpdateCategory(int id, Category data, CategoryService service)
+        private static async Task<Category> UpdateCategory(int id, UpdateCategoryRequestDto data, CategoryService service)
         {
             var category = await service.GetCategoryByIdAsync(id) ?? throw new Exception("Category not found");
 
