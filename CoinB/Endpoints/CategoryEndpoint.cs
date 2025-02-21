@@ -61,13 +61,24 @@ namespace CoinB.Endpoints
             };
         }
 
-        private static async Task<Category> UpdateCategory(int id, UpdateCategoryRequestDto data, CategoryService service)
+        private static async Task<CategoryResponseDto> UpdateCategory(int id, UpdateCategoryRequestDto data, CategoryService service)
         {
+            if(id != data.CategoryId)
+            {
+                throw new Exception("Id does not match");
+            }
+
             var category = await service.GetCategoryByIdAsync(id) ?? throw new Exception("Category not found");
 
             category.CategoryName = data.CategoryName;
 
-            return await service.UpdateCategoryAsync(category);
+            await service.UpdateCategoryAsync(category);
+
+            return new CategoryResponseDto
+            {
+                CategoryId = category.CategoryId,
+                CategoryName = category.CategoryName
+            };
         }
 
         private static async Task DeleteCategory(int id, CategoryService service)
