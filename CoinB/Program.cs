@@ -28,5 +28,6 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.MapCategoryEndpoints();
+app.MapTransactionEndpoints();
 
 app.Run();

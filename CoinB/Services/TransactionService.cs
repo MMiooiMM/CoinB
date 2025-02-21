@@ -6,42 +6,44 @@ namespace CoinB.Services
 {
     public class TransactionService
     {
-        private readonly CoinBDbContext _context;
+        private readonly CoinBDbContext context;
 
         public TransactionService(CoinBDbContext context)
         {
-            _context = context;
+            this.context = context;
         }
 
         public async Task<List<Transaction>> GetAllTransactionsAsync()
         {
-            return await _context.Transactions.ToListAsync();
+            return await context.Transactions.ToListAsync();
         }
 
-        public async Task<Transaction> GetTransactionByIdAsync(int id)
+        public async Task<Transaction?> GetTransactionByIdAsync(int id)
         {
-            return await _context.Transactions.FindAsync(id);
+            return await context.Transactions.FindAsync(id);
         }
 
-        public void AddTransaction(Transaction transaction)
+        public async Task<Transaction> AddTransactionAsync(Transaction transaction)
         {
-            _context.Transactions.Add(transaction);
-            _context.SaveChanges();
+            context.Transactions.Add(transaction);
+            await context.SaveChangesAsync();
+            return transaction;
         }
 
-        public async Task UpdateTransactionAsync(Transaction transaction)
+        public async Task<Transaction> UpdateTransactionAsync(Transaction transaction)
         {
-            _context.Entry(transaction).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            context.Entry(transaction).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return transaction;
         }
 
         public async Task DeleteTransactionAsync(int id)
         {
-            var transaction = await _context.Transactions.FindAsync(id);
+            var transaction = await context.Transactions.FindAsync(id);
             if (transaction != null)
             {
-                _context.Transactions.Remove(transaction);
-                await _context.SaveChangesAsync();
+                context.Transactions.Remove(transaction);
+                await context.SaveChangesAsync();
             }
         }
     }
