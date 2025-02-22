@@ -24,9 +24,9 @@ namespace CoinB.Endpoints
             .WithName(nameof(DeleteTransaction));
         }
 
-        private static async Task<List<TransactionResponseDto>> GetTransactionsByAccount(int accountId, TransactionService service)
+        private static async Task<List<TransactionResponseDto>> GetTransactionsByAccount(int accountId, [AsParameters] GetTransactionRequestDto query, TransactionService service)
         {
-            var list = await service.GetTransactionsByAccountIdAsync(accountId);
+            var list = await service.GetTransactionsByAccountIdAsync(accountId, query.Year, query.Month);
             return list.Select(data => new TransactionResponseDto
             {
                 TransactionId = data.TransactionId,
