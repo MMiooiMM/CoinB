@@ -8,14 +8,14 @@
         {
             if (!context.Request.Headers.TryGetValue(HeaderName, out var extractedCode))
             {
-                context.Response.StatusCode = 400; // Bad Request
+                context.Response.StatusCode = 418; // I'm a teapot
                 await context.Response.WriteAsync("Verification code is missing.");
                 return;
             }
 
             if (!string.Equals(extractedCode, verificationCode, StringComparison.Ordinal))
             {
-                context.Response.StatusCode = 401; // Unauthorized
+                context.Response.StatusCode = 418; // I'm a teapot
                 await context.Response.WriteAsync("Invalid verification code.");
                 return;
             }
