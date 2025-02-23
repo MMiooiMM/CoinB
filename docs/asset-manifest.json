@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/CoinB/static/css/main.9e761f0f.css",
+    "main.js": "/CoinB/static/js/main.ca5cdf4f.js",
+    "static/js/453.49e9ef5f.chunk.js": "/CoinB/static/js/453.49e9ef5f.chunk.js",
+    "index.html": "/CoinB/index.html",
+    "main.9e761f0f.css.map": "/CoinB/static/css/main.9e761f0f.css.map",
+    "main.ca5cdf4f.js.map": "/CoinB/static/js/main.ca5cdf4f.js.map",
+    "453.49e9ef5f.chunk.js.map": "/CoinB/static/js/453.49e9ef5f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.9e761f0f.css",
+    "static/js/main.ca5cdf4f.js"
+  ]
+}
